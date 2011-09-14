@@ -1,0 +1,8 @@
+Makefile*
+!Makefile.PL
+*blib
+META.yml
+inc/
+*.gz
+*.bak
+WebService-Klout-*
