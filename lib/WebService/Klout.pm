@@ -23,7 +23,7 @@ sub new {
         croak 'api_key is empty';
     }
 
-    my $ua = LWP::UserAgent->new;
+    my $ua = LWP::UserAgent->new('agent' => "WebService-Klout/$VERSION");
 
     bless { 'ua' => $ua, %arg }, $class;
 }
