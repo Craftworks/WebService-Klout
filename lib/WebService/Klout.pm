@@ -6,7 +6,7 @@ use Carp;
 use LWP::UserAgent;
 use JSON;
 
-our $VERSION = '1.0.0';
+our $VERSION = '1.0.1';
 
 our %API_URI = (
     'score'         => 'http://api.klout.com/1/klout.json',
@@ -34,26 +34,20 @@ sub users_topics  { _request(@_) }
 sub influenced_by { _request(@_) }
 sub influencer_of { _request(@_) }
 
-sub _build_url {
-    my ($self, $action, @users) = @_;
-
-    sprintf '%s?key=%s&users=%s',
-        $API_URI{ $action },
-        $self->{'api_key'},
-        join ',', @users;
-}
-
 sub _request {
     my ($self, @users) = @_;
 
-    return () unless @users;
+    return unless @users;
 
     my $caller   = (caller 1)[3];
     my ($action) = $caller =~ /([^:]+)$/o;
 
-    my $url = $self->_build_url($action, @users);
+    # parameter example http://developer.klout.com/docs/read/api/API
+    my $url   = $API_URI{ $action };
+    my $key   = $self->{'api_key'};
+    my $users = encode_json(\@users);
 
-    my $res = $self->{'ua'}->get($url);
+    my $res = $self->{'ua'}->post($url, { 'key' => $key, 'users' => $users });
 
     unless ( $res->is_success ) {
         $self->{'lwp.error'} = $res->status_line;

@@ -26,10 +26,14 @@ is_deeply(
     'api data'
 );
 
-is_deeply(
-    [ sort keys %{ $users->[0]{'influencers'}[0] } ],
-    [ sort qw(twitter_screen_name kscore) ],
-    'api data'
-);
+subtest 'influencers keys' => sub {
+    plan 'skip_all' => q{something's wrong on Klout}
+        unless @{ $users->[0]{'influencers'} };
+    is_deeply(
+        [ sort keys %{ $users->[0]{'influencers'}[0] } ],
+        [ sort qw(twitter_screen_name kscore) ],
+        'api data'
+    );
+};
 
 done_testing;
